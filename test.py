@@ -7,6 +7,7 @@ import csv
 from datetime import datetime
 import psutil
 import platform
+import time
 
 
 def bench_model(model, args, images, repeat_coeff=5):
@@ -19,6 +20,7 @@ def bench_model(model, args, images, repeat_coeff=5):
         for image in images:
             res = model.predict(image, task="detect", verbose=False, half=is_half, int8=is_int8, optimize=optimize)
             inference_times.append(res[0].speed["inference"])
+            time.sleep(DELAY_BETWEEN_TESTS)
 
     return {
             "inference_time": sum(inference_times) / (len(inference_times)), # ms
@@ -70,6 +72,7 @@ def parse_model_name(name, path):
     dot_index = name.rfind(".")
     if dot_index != -1: name = name[:dot_index]
     if "_ncnn_model" in name: name = name.replace("_ncnn_model", "")
+    if "_openvino_model" in name: name = name.replace("_openvino_model", "")
     base_model, runtime, dtype = name.split("_")
     return f"{path}/{name_full}", base_model, runtime, dtype
 
@@ -104,6 +107,9 @@ if __name__ == "__main__":
 
     if TEST_EXPORTED:
         exported_models = os.listdir(EXPORTED_MODELS_PATH)
+        if MODEL_FILTER:
+            exported_models = list(filter(lambda x: "openvino" in x, exported_models))
+        print(exported_models)
         print(f"Ready to check exported models: {len(exported_models)}")
         models = [parse_model_name(exported_model, EXPORTED_MODELS_PATH) for exported_model in exported_models]
         print(models)

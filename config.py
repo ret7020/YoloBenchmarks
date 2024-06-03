@@ -15,3 +15,6 @@ CSV_HEADER = ['model', 'runtime', 'inference_time', 'fps', 'accurate_time', 'hal
 # What to test
 TEST_BASE = 1
 TEST_EXPORTED = 1
+
+MODEL_FILTER = "openvino"
+DELAY_BETWEEN_TESTS = 0.1

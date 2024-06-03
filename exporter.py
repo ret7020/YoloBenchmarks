@@ -12,10 +12,15 @@ if not os.path.exists("./exported_models"):
 EXPORT_MODELS = [
     {"format": "ncnn", "half": False, "int8": False, "optimize": False, "save_name": "ncnn_base_ncnn_model"},
     {"format": "ncnn", "half": True, "int8": False, "optimize": False, "save_name": "ncnn_half_ncnn_model"},
-    {"format": "ncnn", "half": False, "int8": True, "optimize": False, "save_name": "ncnn_int8_ncnn_model"}
-    # {"format": "onnx", "half": False, "int8": False, "optimize": True, "save_name": "onnx_base.onnx"},
-    # {"format": "onnx", "half": False, "int8": True, "optimize": True, "save_name": "onnx_int8.onnx"}
-    # {"format": "tflite", "half": False, "int8": False, "optimize": True, "save_name": "tflite_base.tflite"} # half and int8
+    {"format": "ncnn", "half": False, "int8": True, "optimize": False, "save_name": "ncnn_int8_ncnn_model"},
+    {"format": "onnx", "half": False, "int8": False, "optimize": True, "save_name": "onnx_base.onnx"},
+    {"format": "onnx", "half": False, "int8": True, "optimize": True, "save_name": "onnx_int8.onnx"},
+    {"format": "tflite", "half": False, "int8": False, "optimize": True, "save_name": "tflite_base.tflite"} # half and int8
+]
+
+EXPORT_MODELS = [
+    {"format": "openvino", "half": False, "int8": False, "optimize": True, "save_name": "openvino_base_openvino_model"},
+    {"format": "openvino", "half": True, "int8": False, "optimize": True, "save_name": "openvino_half_openvino_model"}
 ]
 
 for model_name in tqdm(BASE_MODELS):
@@ -26,7 +31,7 @@ for model_name in tqdm(BASE_MODELS):
         dst2 = None
         model = YOLO(model_name)
         model.export(format=model_config["format"], half=model_config["half"], int8=model_config["int8"], simplify=True, optimize=model_config["optimize"], verbose=False)
-        if model_config["format"] == "ncnn": # For ncnn
+        if model_config["format"] in ["ncnn", "openvino"]: # For ncnn
             src = f"./{model_base_name}_{model_config['format']}_model"
         elif model_config["format"] == "tflite": # For tflite
             src = f"./{model_base_name}_saved_model/{model_base_name}_float32.tflite"
