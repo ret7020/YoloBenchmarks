@@ -21,14 +21,17 @@ def bench_model(model, args, images, repeat_coeff=5):
             res = model.predict(image, task="detect", verbose=False, half=is_half, int8=is_int8, optimize=optimize)
             inference_times.append(res[0].speed["inference"])
             time.sleep(DELAY_BETWEEN_TESTS)
-
+        
+    metrics = model.val(data=VALIDATE_CONFIG, verbose=False)
     return {
             "inference_time": sum(inference_times) / (len(inference_times)), # ms
             "inference_time_1": round(sum(inference_times) / (len(inference_times)), 1), # ms 1 digit
             "fps": round(1000 / (sum(inference_times) / (len(inference_times))), 1), # fps 1 digit
             "half": is_half,
             "int8": is_int8,
-            "runtime": runtime
+            "runtime": runtime,
+            "map50": metrics.box.map50,
+            "map75": metrics.box.map75
         }
 
 def benchmark(models, images, repeat_coeff=5):
@@ -65,7 +68,7 @@ def csv_benchmark(path, results):
             res = results[model]
             writer.writerow({'model': model, 'inference_time': res['inference_time_1'], 
                             'fps': res['fps'], 'accurate_time': res['inference_time'], 
-                            'half': res["half"], 'int8': res["int8"], 'runtime': res["runtime"]})
+                            'half': res["half"], 'int8': res["int8"], 'runtime': res["runtime"], 'mAP50': res['map50'], 'mAP75': res['map75']})
 
 def parse_model_name(name, path):
     name_full = name
