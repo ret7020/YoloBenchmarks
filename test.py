@@ -31,7 +31,8 @@ def bench_model(model, args, images, repeat_coeff=5):
             "int8": is_int8,
             "runtime": runtime,
             "map50": metrics.box.map50,
-            "map75": metrics.box.map75
+            "map75": metrics.box.map75,
+            "device": "cpu"
         }
 
 def benchmark(models, images, repeat_coeff=5):
@@ -39,8 +40,6 @@ def benchmark(models, images, repeat_coeff=5):
     results = {}
     for model in tqdm(models):
         args = model[1:] if len(model) > 1 else []
-        is_half = True if "half" in args else False
-        is_int8 = True if "int8" in args else False
         model = YOLO(model[0])
         results[model.model_name] = bench_model(model, args, images, repeat_coeff=5)
     return results
@@ -68,7 +67,7 @@ def csv_benchmark(path, results):
             res = results[model]
             writer.writerow({'model': model, 'inference_time': res['inference_time_1'], 
                             'fps': res['fps'], 'accurate_time': res['inference_time'], 
-                            'half': res["half"], 'int8': res["int8"], 'runtime': res["runtime"], 'mAP50': res['map50'], 'mAP75': res['map75']})
+                            'half': res["half"], 'int8': res["int8"], 'runtime': res["runtime"], 'mAP50': res['map50'], 'mAP75': res['map75'], 'device': res['cpu']})
 
 def parse_model_name(name, path):
     name_full = name
@@ -102,7 +101,7 @@ if __name__ == "__main__":
     print(f"Writing csv results to: {colored(path, 'green')}")
 
     print(f"Loaded Base Models ({len(BASE_MODELS)}): {colored(BASE_MODELS, 'green')}")
-    if TEST_BASE:
+    if TEST_BASE: # Test base yolo models
         print(f"Testing BASE models on {colored('cpu', 'yellow')}")
         base_models_results = benchmark(BASE_MODELS, TEST_IMAGES)
         print_benchmark(base_models_results)

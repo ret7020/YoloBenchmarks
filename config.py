@@ -10,7 +10,7 @@ EXPORTED_MODELS_PATH = "./exported_models"
 
 TEST_IMAGES = ["./assets/images/bus.jpg"]
 DEVICES = ["cpu"]
-CSV_HEADER = ['model', 'runtime', 'inference_time', 'fps', 'accurate_time', 'half', 'int8', 'mAP50', 'mAP75']
+CSV_HEADER = ['model', 'runtime', 'inference_time', 'fps', 'accurate_time', 'device', 'half', 'int8', 'mAP50', 'mAP75']
 VALIDATE_CONFIG = "coco8.yaml"
 
 # What to test
