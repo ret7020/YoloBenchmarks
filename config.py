@@ -16,5 +16,5 @@ CSV_HEADER = ['model', 'runtime', 'inference_time', 'fps', 'accurate_time', 'hal
 TEST_BASE = 1
 TEST_EXPORTED = 1
 
-MODEL_FILTER = "openvino"
+MODEL_FILTER = None #lambda x: "openvino" in x or "ncnn" in x
 DELAY_BETWEEN_TESTS = 0.1

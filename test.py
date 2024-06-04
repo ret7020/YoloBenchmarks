@@ -64,8 +64,8 @@ def csv_benchmark(path, results):
         for model in results:
             res = results[model]
             writer.writerow({'model': model, 'inference_time': res['inference_time_1'], 
-                             'fps': res['fps'], 'accurate_time': res['inference_time'], 
-                             'half': res["half"], 'int8': res["int8"], 'runtime': res["runtime"]})
+                            'fps': res['fps'], 'accurate_time': res['inference_time'], 
+                            'half': res["half"], 'int8': res["int8"], 'runtime': res["runtime"]})
 
 def parse_model_name(name, path):
     name_full = name
@@ -108,12 +108,10 @@ if __name__ == "__main__":
     if TEST_EXPORTED:
         exported_models = os.listdir(EXPORTED_MODELS_PATH)
         if MODEL_FILTER:
-            exported_models = list(filter(lambda x: "openvino" in x, exported_models))
+            exported_models = list(filter(MODEL_FILTER, exported_models))
         print(exported_models)
         print(f"Ready to check exported models: {len(exported_models)}")
         models = [parse_model_name(exported_model, EXPORTED_MODELS_PATH) for exported_model in exported_models]
         print(models)
-        results = benchmark(models, TEST_IMAGES)
+        results = benchmark(models, TEST_IMAGES)    
         csv_benchmark(path, results)
-        
-        
