@@ -12,10 +12,11 @@ TEST_IMAGES = ["./assets/images/bus.jpg", "./assets/images/cars.jpg"]
 DEVICES = ["cpu"]
 CSV_HEADER = ['model', 'runtime', 'inference_time', 'fps', 'accurate_time', 'device', 'half', 'int8', 'mAP50', 'mAP75']
 VALIDATE_CONFIG = "coco8.yaml"
+WARMUP_IMAGES = 5
 
 # What to test
 TEST_BASE = 1
-TEST_EXPORTED = 0
+TEST_EXPORTED = 1
 
 MODEL_FILTER = None #lambda x: "openvino" in x or "ncnn" in x
 DELAY_BETWEEN_TESTS = 0.1

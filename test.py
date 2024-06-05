@@ -17,6 +17,10 @@ def bench_model(model, args, images, repeat_coeff=5):
     is_int8 = True if "int8" in args else False
     optimize = False if "ncnn" in args else True
     runtime = args[1] if len(args) > 1 else "BASE"
+    # Warmup model before benched inference
+    for _ in range(WARMUP_IMAGES):
+        _ = model.predict(images[0], task="detect", verbose=False, half=is_half, int8=is_int8, optimize=optimize)
+    
     for _ in range(repeat_coeff): # test each image repeat_coeff times on same model
         for image in images:
             res = model.predict(image, task="detect", verbose=False, half=is_half, int8=is_int8, optimize=optimize)
@@ -44,6 +48,9 @@ def bench_model_camera(model, args, images, repeat_coeff=5):
     optimize = False if "ncnn" in args else True
     runtime = args[1] if len(args) > 1 else "BASE"
     cap = cv2.VideoCapture(0)
+    # Warmup model before benched inference
+    for _ in range(WARMUP_IMAGES):
+        _ = model.predict(images[0], task="detect", verbose=False, half=is_half, int8=is_int8, optimize=optimize)
     for i in range(20):
         _, image = cap.read()
         res = model.predict(image, task="detect", verbose=False, half=is_half, int8=is_int8, optimize=optimize)
