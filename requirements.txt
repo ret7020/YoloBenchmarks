@@ -8,5 +8,4 @@ onnx_graphsurgeon
 flatbuffers 
 onnxruntime
 tf_keras
-onnx2tf
 tflite_support

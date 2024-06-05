@@ -8,6 +8,7 @@ from datetime import datetime
 import psutil
 import platform
 import time
+import cv2
 
 
 def bench_model(model, args, images, repeat_coeff=5):
@@ -21,7 +22,7 @@ def bench_model(model, args, images, repeat_coeff=5):
             res = model.predict(image, task="detect", verbose=False, half=is_half, int8=is_int8, optimize=optimize)
             inference_times.append(res[0].speed["inference"])
             time.sleep(DELAY_BETWEEN_TESTS)
-        
+
     metrics = model.val(data=VALIDATE_CONFIG, verbose=False)
     return {
             "inference_time": sum(inference_times) / (len(inference_times)), # ms
@@ -35,13 +36,42 @@ def bench_model(model, args, images, repeat_coeff=5):
             "device": "cpu"
         }
 
+
+def bench_model_camera(model, args, images, repeat_coeff=5):
+    inference_times = []
+    is_half = True if "half" in args else False
+    is_int8 = True if "int8" in args else False
+    optimize = False if "ncnn" in args else True
+    runtime = args[1] if len(args) > 1 else "BASE"
+    cap = cv2.VideoCapture(0)
+    for i in range(20):
+        image = cap.read()
+        res = model.predict(image, task="detect", verbose=False, half=is_half, int8=is_int8, optimize=optimize)
+        inference_times.append(res[0].speed["inference"])
+                
+
+    metrics = model.val(data=VALIDATE_CONFIG, verbose=False)
+    return {
+            "inference_time": sum(inference_times) / (len(inference_times)), # ms
+            "inference_time_1": round(sum(inference_times) / (len(inference_times)), 1), # ms 1 digit
+            "fps": round(1000 / (sum(inference_times) / (len(inference_times))), 1), # fps 1 digit
+            "half": is_half,
+            "int8": is_int8,
+            "runtime": runtime,
+            "map50": metrics.box.map50,
+            "map75": metrics.box.map75,
+            "device": "cpu"
+        }
+
+
 def benchmark(models, images, repeat_coeff=5):
     print(f"Testing models: {len(models)}\nUniq images: {colored(len(images), 'green')}\nInferences count: {colored(str(len(models) * repeat_coeff * len(images)), 'yellow')}")
     results = {}
     for model in tqdm(models):
         args = model[1:] if len(model) > 1 else []
         model = YOLO(model[0])
-        results[model.model_name] = bench_model(model, args, images, repeat_coeff=5)
+        # results[model.model_name] = bench_model(model, args, images, repeat_coeff=5)
+        results[model.model_name] = bench_model_camera(model, args, images, repeat_coeff=5)
     return results
 
 def print_benchmark(results):
@@ -78,7 +108,7 @@ def parse_model_name(name, path):
     base_model, runtime, dtype = name.split("_")
     return f"{path}/{name_full}", base_model, runtime, dtype
 
-def machine_info():
+def print_machine_info():
     info = {}
     info['platform'] = platform.system()
     info['release'] = platform.release()
@@ -94,7 +124,7 @@ def machine_info():
 
 
 if __name__ == "__main__":
-    machine_info()
+    print_machine_info()
     if not os.path.exists("./results"):
         os.mkdir("./results")
     path = csv_init()
