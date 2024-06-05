@@ -9,21 +9,33 @@ import psutil
 import platform
 import time
 import cv2
+import gc
+import torch
 
 
 def bench_model(model, args, images, repeat_coeff=5):
     inference_times = []
     is_half = True if "half" in args else False
     is_int8 = True if "int8" in args else False
-    optimize = False if "ncnn" in args else True
+    optimize = False if "ncnn" in args else True # NCNN models can't work with optimize flag
     runtime = args[1] if len(args) > 1 else "BASE"
-    # Warmup model before benched inference
+
+    # Warmup model before benched inference (anyway on test images set, not camera)
+    warmup_times = []
     for _ in range(WARMUP_IMAGES):
-        _ = model.predict(images[0], task="detect", verbose=False, half=is_half, int8=is_int8, optimize=optimize)
+        res = model.predict(images[0], task=TASK, verbose=False, half=is_half, int8=is_int8, optimize=optimize)
+        warmup_times.append(res[0].speed["inference"])
     
-    for _ in range(repeat_coeff): # test each image repeat_coeff times on same model
-        for image in images:
-            res = model.predict(image, task="detect", verbose=False, half=is_half, int8=is_int8, optimize=optimize)
+    if TEST_SOURCE_ARGS[0] == "images":
+        for _ in range(repeat_coeff): # test each image repeat_coeff times on same model
+            for image in images:
+                res = model.predict(image, task=TASK, verbose=False, half=is_half, int8=is_int8, optimize=optimize)
+                inference_times.append(res[0].speed["inference"])
+                time.sleep(DELAY_BETWEEN_TESTS)
+    elif TEST_SOURCE_ARGS[1] == "camera":
+        for _ in range(int(TEST_SOURCE_ARGS[2])):
+            _, image = CAPTURE.read()
+            res = model.predict(image, task=TASK, verbose=False, half=is_half, int8=is_int8, optimize=optimize)
             inference_times.append(res[0].speed["inference"])
             time.sleep(DELAY_BETWEEN_TESTS)
 
@@ -32,44 +44,15 @@ def bench_model(model, args, images, repeat_coeff=5):
             "inference_time": sum(inference_times) / (len(inference_times)), # ms
             "inference_time_1": round(sum(inference_times) / (len(inference_times)), 1), # ms 1 digit
             "fps": round(1000 / (sum(inference_times) / (len(inference_times))), 1), # fps 1 digit
-            "half": is_half,
-            "int8": is_int8,
+            "half": int(is_half),
+            "int8": int(is_int8),
             "runtime": runtime,
             "map50": metrics.box.map50,
             "map75": metrics.box.map75,
-            "device": "cpu"
+            "device": "cpu", # TODO selectable device
+            "warmup_min_inf_time": min(warmup_times),
+            "warmup_max_inf_time": max(warmup_times)
         }
-
-
-def bench_model_camera(model, args, images, repeat_coeff=5):
-    inference_times = []
-    is_half = True if "half" in args else False
-    is_int8 = True if "int8" in args else False
-    optimize = False if "ncnn" in args else True
-    runtime = args[1] if len(args) > 1 else "BASE"
-    cap = cv2.VideoCapture(0)
-    # Warmup model before benched inference
-    for _ in range(WARMUP_IMAGES):
-        _ = model.predict(images[0], task="detect", verbose=False, half=is_half, int8=is_int8, optimize=optimize)
-    for i in range(20):
-        _, image = cap.read()
-        res = model.predict(image, task="detect", verbose=False, half=is_half, int8=is_int8, optimize=optimize)
-        inference_times.append(res[0].speed["inference"])
-                
-
-    metrics = model.val(data=VALIDATE_CONFIG, verbose=False)
-    return {
-            "inference_time": sum(inference_times) / (len(inference_times)), # ms
-            "inference_time_1": round(sum(inference_times) / (len(inference_times)), 1), # ms 1 digit
-            "fps": round(1000 / (sum(inference_times) / (len(inference_times))), 1), # fps 1 digit
-            "half": is_half,
-            "int8": is_int8,
-            "runtime": runtime,
-            "map50": metrics.box.map50,
-            "map75": metrics.box.map75,
-            "device": "cpu"
-        }
-
 
 def benchmark(models, images, repeat_coeff=5):
     print(f"Testing models: {len(models)}\nUniq images: {colored(len(images), 'green')}\nInferences count: {colored(str(len(models) * repeat_coeff * len(images)), 'yellow')}")
@@ -77,8 +60,13 @@ def benchmark(models, images, repeat_coeff=5):
     for model in tqdm(models):
         args = model[1:] if len(model) > 1 else []
         model = YOLO(model[0])
-        # results[model.model_name] = bench_model(model, args, images, repeat_coeff=5)
-        results[model.model_name] = bench_model_camera(model, args, images, repeat_coeff=5)
+        results[model.ckpt_path] = bench_model(model, args, images, repeat_coeff=2)
+
+        # Clean system after inference
+        del model
+        torch.cuda.empty_cache()
+        gc.collect()
+
     return results
 
 def print_benchmark(results):
@@ -102,6 +90,7 @@ def csv_benchmark(path, results):
         writer = csv.DictWriter(csvfile, fieldnames=CSV_HEADER)
         for model in results:
             res = results[model]
+            # TOOD JOIN
             writer.writerow({'model': model, 'inference_time': res['inference_time_1'], 
                             'fps': res['fps'], 'accurate_time': res['inference_time'], 
                             'half': res["half"], 'int8': res["int8"], 'runtime': res["runtime"], 'mAP50': res['map50'], 'mAP75': res['map75'], 'device': res['device']})
@@ -136,6 +125,11 @@ if __name__ == "__main__":
         os.mkdir("./results")
     path = csv_init()
     print(f"Writing csv results to: {colored(path, 'green')}")
+    TEST_SOURCE_ARGS = TEST_SOURCE.split(":")
+    if TEST_SOURCE_ARGS[0] == "camera":
+        if TEST_SOURCE_ARGS[1].isdigit(): src = int(TEST_SOURCE_ARGS[1])
+        else: src = TEST_SOURCE_ARGS[1]
+        CAPTURE = cv2.VideoCapture(src)
 
     print(f"Loaded Base Models ({len(BASE_MODELS)}): {colored(BASE_MODELS, 'green')}")
     if TEST_BASE: # Test base yolo models
@@ -154,3 +148,6 @@ if __name__ == "__main__":
         print(models)
         results = benchmark(models, TEST_IMAGES)    
         csv_benchmark(path, results)
+
+    if TEST_SOURCE_ARGS[0] == "camera":
+        CAPTURE.release()
