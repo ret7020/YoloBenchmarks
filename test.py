@@ -45,7 +45,7 @@ def bench_model_camera(model, args, images, repeat_coeff=5):
     runtime = args[1] if len(args) > 1 else "BASE"
     cap = cv2.VideoCapture(0)
     for i in range(20):
-        image = cap.read()
+        _, image = cap.read()
         res = model.predict(image, task="detect", verbose=False, half=is_half, int8=is_int8, optimize=optimize)
         inference_times.append(res[0].speed["inference"])
                 
@@ -97,7 +97,7 @@ def csv_benchmark(path, results):
             res = results[model]
             writer.writerow({'model': model, 'inference_time': res['inference_time_1'], 
                             'fps': res['fps'], 'accurate_time': res['inference_time'], 
-                            'half': res["half"], 'int8': res["int8"], 'runtime': res["runtime"], 'mAP50': res['map50'], 'mAP75': res['map75'], 'device': res['cpu']})
+                            'half': res["half"], 'int8': res["int8"], 'runtime': res["runtime"], 'mAP50': res['map50'], 'mAP75': res['map75'], 'device': res['device']})
 
 def parse_model_name(name, path):
     name_full = name
