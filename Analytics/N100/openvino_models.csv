@@ -1,0 +1,11 @@
+model,runtime,inference_time,fps,accurate_time,device,half,int8,mAP50,mAP75
+./exported_models/yolov8x_openvino_half_openvino_model,openvino,1916.9,0.5,1916.9319987297058,cpu,True,False,0.9772964376590331,0.8760951573165313
+./exported_models/yolov8s_openvino_base_openvino_model,openvino,234.8,4.3,234.8294973373413,cpu,False,False,0.9168465429318852,0.8037371653832052
+./exported_models/yolov8m_openvino_half_openvino_model,openvino,622.2,1.6,622.2376704216003,cpu,True,False,0.9401705917874396,0.8353348229057357
+./exported_models/yolov8m_openvino_base_openvino_model,openvino,621.4,1.6,621.4051961898804,cpu,False,False,0.938966888083736,0.8350651311249138
+./exported_models/yolov8n_openvino_base_openvino_model,openvino,82.6,12.1,82.63369798660278,cpu,False,False,0.808564761582811,0.6919060274941214
+./exported_models/yolov8n_openvino_half_openvino_model,openvino,85.3,11.7,85.30839681625366,cpu,True,False,0.8085671406431106,0.6919558913308913
+./exported_models/yolov8l_openvino_half_openvino_model,openvino,1237.1,0.8,1237.0620965957642,cpu,True,False,0.9757710280373831,0.8680387352890274
+./exported_models/yolov8s_openvino_half_openvino_model,openvino,236.5,4.2,236.4771008491516,cpu,True,False,0.9170998657078778,0.8037319832147419
+./exported_models/yolov8x_openvino_base_openvino_model,openvino,1947.1,0.5,1947.1384525299072,cpu,False,False,0.9772964376590331,0.8784099721313462
+./exported_models/yolov8l_openvino_base_openvino_model,openvino,1251.8,0.8,1251.8303632736206,cpu,False,False,0.9741043613707165,0.8680387352890274
