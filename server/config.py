@@ -4,6 +4,9 @@ models = {
     "tensotRT": []
 }
 
+videos = [""]
+
 abs_path = ""
 video_path = "files/videos"
 model_path = "files/models"
+python_files_path = "files/py"

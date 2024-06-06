@@ -52,7 +52,7 @@ def receive_data(connection):
 
     data = b''
     while len(data) < size:
-        data += connection.recv(1024)
+        data += connection.recv(size-data)
 
     return data
 

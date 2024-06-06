@@ -10,22 +10,27 @@ port = 8001
 
 
 def process_client(conn, addr):
-    print("Phase 1 started")
-    # step 0, send available models
-    send_json(conn, models)
-
-    # step 1 and 2, recv chosen models and them
-    need_models = receive_json(conn)  # recv in ["model type"]
-    for model_name in need_models:
-        send_file(path.join(abs_path, model_name))
-        print(f"send {model_name}")
-
-    # step 3, send required videos
-    need_videos = receive_json(conn)  # recv in ["model type"]
-    for video_name in need_videos:
-        send_file(path.join(abs_path, video_name))
-        print(f"send {video_name}")
-    print("Phase 1 finished")
+    print("Connect from", addr)
+    while True:
+        recv = receive_json(conn)
+        if recv["type"] == "ask_files":
+            print(addr, f"asked file {recv["filename"]} from group {recv["ftype"]}")
+            file_name = recv["filename"]
+            if recv["ftype"] == "py":
+                send_file(conn, path.join(python_files_path, file_name))
+            elif recv["ftype"] == "video":
+                send_file(conn, path.join(video_path, file_name))
+            elif recv["ftype"] == "model":
+                send_file(conn, path.join(model_path, file_name))
+        elif recv["type"] == "get_models":
+            print(addr, "asked models")
+            send_json(conn, models)
+        elif recv["type"] == "get_videos":
+            print(addr, "asked videos")
+            send_json(conn, videos)
+        elif recv["type"] == "send_stats":
+            print("flex")
+            print(recv)
 
 
 if __name__ == "__main__":
