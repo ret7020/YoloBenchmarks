@@ -3,6 +3,9 @@ yolov8n_int8_openvino_model/
 exported_models/
 runs/
 results/
+.idea/
+server/analytics/
+server/files/
 *.log
 *.onnx
 *.pt
