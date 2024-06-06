@@ -1,4 +1,8 @@
-from ultralytics import YOLO
+try:
+    from ultralytics import YOLO
+except ModuleNotFoundError:
+    import os
+    os.system("pip3 install ultralytics")
 import os
 from config import *
 from tqdm import tqdm
