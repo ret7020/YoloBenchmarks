@@ -121,9 +121,14 @@ if __name__ == "__main__":
     if len(videos) != 0: print(f"We need to download videos: {', '.join(videos)} ({len(videos)})")
     for video in videos:
         if not path.isfile(path.join(videos_path, video)):
-            ask_file(sock, models_path, video, "video")
-            print(f"Downloaded {video} ")
+            ask_file(sock, videos_path, video, "video")
+            print(f"Downloaded {video}")
 
     print("All models and videos downloaded.")
+
+    # TODO: make bench
+
+    # results = {"jisdhfishdf": 2342}
+    # send_json(sock, {"type": "send_stats", "save_name": "pedredson_nano.csv", "results": results})
 
     sock.close()

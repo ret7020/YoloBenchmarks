@@ -3,10 +3,28 @@ from time import sleep
 from threading import Thread
 from config import *
 from socket_utils import *
-from os import path
+from os import path, makedirs
+import csv
 
 ip = "localhost"
 port = 8001
+
+makedirs(python_files_path, exist_ok=True)
+makedirs(video_path, exist_ok=True)
+makedirs(model_path, exist_ok=True)
+makedirs(analytics_path, exist_ok=True)
+
+
+def csv_benchmark(path, results):
+    with open(path, 'a', newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=CSV_HEADER)
+        for model in results:
+            res = results[model]
+            # TOOD JOIN
+            writer.writerow({'model': model, 'inference_time': res['inference_time_1'],
+                             'fps': res['fps'], 'accurate_time': res['inference_time'],
+                             'half': res["half"], 'int8': res["int8"], 'runtime': res["runtime"], 'mAP50': res['map50'],
+                             'mAP75': res['map75'], 'device': res['device']})
 
 
 def process_client(conn, addr):
@@ -29,8 +47,8 @@ def process_client(conn, addr):
             print(addr, "asked videos")
             send_json(conn, videos)
         elif recv["type"] == "send_stats":
-            print("flex")
-            print(recv)
+            print("Flex, we resive results from", addr)
+            csv_benchmark(path.join(analytics_path, recv["save_name"]), recv["results"])
 
 
 if __name__ == "__main__":

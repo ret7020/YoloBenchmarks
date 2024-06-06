@@ -10,3 +10,6 @@ abs_path = ""
 video_path = "files/videos"
 model_path = "files/models"
 python_files_path = "files/py"
+analytics_path = "files/analytics"
+
+CSV_HEADER = ['model', 'runtime', 'inference_time', 'fps', 'accurate_time', 'device', 'half', 'int8', 'mAP50', 'mAP75']
