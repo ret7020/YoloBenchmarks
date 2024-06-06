@@ -5,7 +5,7 @@ from config import *
 from socket_utils import *
 from os import path
 
-ip = "0.0.0.0"
+ip = "localhost"
 port = 8001
 
 
@@ -42,3 +42,4 @@ if __name__ == "__main__":
     while True:
         conn, addr = sock.accept()
         t = Thread(target=process_client, args=(conn, addr))
+        t.start()

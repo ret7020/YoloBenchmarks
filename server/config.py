@@ -1,10 +1,10 @@
 models = {
-    "base": ["yolov8n.pt", "yolov8s.pt", "yolov8m.pt", "yolov8l.pt", "yolov8x.pt"],
-    "openvine": [],
-    "tensotRT": []
+    "base": ["yolov8n.pt"],
+    "openvine": ["openyolov8n.pt"],
+    "tensotRT": ["CUDAyolov8n.pt"]
 }
 
-videos = [""]
+videos = ["vidos.mp4"]
 
 abs_path = ""
 video_path = "files/videos"

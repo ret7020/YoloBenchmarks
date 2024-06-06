@@ -6,6 +6,7 @@ results/
 .idea/
 server/analytics/
 server/files/
+data/
 *.log
 *.onnx
 *.pt

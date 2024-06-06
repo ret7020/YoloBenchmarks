@@ -3,6 +3,8 @@ from json import dumps, loads
 from struct import pack, unpack
 import base64
 from time import sleep
+from os import path
+import ntpath
 
 
 def send_file(sock, file_name):
@@ -19,7 +21,8 @@ def send_file(sock, file_name):
     with open(file_name, "rb") as file:
         file_content = file.read()
     print("Начинаем кодирование файла")
-    file_data = {"name": file_name, "content": base64.b64encode(file_content).decode('ascii')}
+    file_data = {"name": ntpath.basename(file_name), "content": base64.b64encode(file_content).decode('ascii')}
+    print(ntpath.basename(file_name))
 
     # превращаем длину json c файлом в 4 байта
     byte_n = pack('<I', len(dumps(file_data)))
@@ -52,7 +55,7 @@ def receive_data(connection):
 
     data = b''
     while len(data) < size:
-        data += connection.recv(size-data)
+        data += connection.recv(size-len(data))
 
     return data
 
