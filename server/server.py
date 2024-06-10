@@ -47,7 +47,7 @@ def process_client(conn, addr):
             print(addr, "asked videos")
             send_json(conn, videos)
         elif recv["type"] == "send_stats":
-            print("Flex, we resive results from", addr)
+            print("Flex, we recieved results from", addr)
             if not recv["save_name"] in headers_writen:
                 with open(path.join(analytics_path, recv["save_name"]), 'w', newline='') as csvfile:
                     writer = csv.DictWriter(csvfile, fieldnames=CSV_HEADER)

@@ -27,6 +27,29 @@ models = {
         ("yolov8x_openvino_half_openvino_model", "1xlaM7NQR2YcJEDaJt9bxVu-Q7qwEdvwQ", True),
         ("yolov8x_openvino_int8_openvino_model", "1Pju0ySDnFZ2AxySmoZTqQJT0wxQy2Iqs", True),
     ],
+    "ncnn": [
+        ("yolov8n_ncnn_base_ncnn_model", "1YyN8M2rzjitslnKuntwsHhati5AU8J-1", True),
+        ("yolov8n_ncnn_half_ncnn_model", "1lgft4bl9Vr3IL8NBKzlDNJAbGxob988E", True),
+        ("yolov8n_ncnn_int8_ncnn_model", "1d1mvQbEviFHgKapM-oYOdNCfB0jwnKmE", True),
+
+        ("yolov8s_ncnn_base_ncnn_model", "1Rfn7EgyWs0NzZZNUslqhSD99YcQNXMd9", True),
+        ("yolov8s_ncnn_half_ncnn_model", "1j_DYrJBxQVzpOnWIKlcfyw3avW4ROyEH", True),
+        ("yolov8s_ncnn_int8_ncnn_model", "1TSErD_XiTCnyskfCjv5GQ4i48h_dEE0S", True),
+
+        ("yolov8m_ncnn_base_ncnn_model", "1_gfbc7VfvewdGc_g6j_jfeUv7DxjYfqV", True),
+        ("yolov8m_ncnn_half_ncnn_model", "1Ngi0-82kHXay-tk2UIOdG6YoSMY3OdgC", True),
+        ("yolov8m_ncnn_int8_ncnn_model", "1kmNKd1G-PEHR-bZ02LBLkTViMVmKoFRJ", True),
+
+        ("yolov8l_ncnn_base_ncnn_model", "1pfr6HX76nVfNkomJ2yPH4Vxq4sgUxQ_p", True),
+        ("yolov8l_ncnn_half_ncnn_model", "165pgm_qde_RBwqsY8maXhaRxR0kIN9mt", True),
+        ("yolov8l_ncnn_int8_ncnn_model", "13cYGHWes9aVjbsLJuTSgT5m7B-Hzx-j5", True),
+
+        ("yolov8x_ncnn_base_ncnn_model", "1NWjD7oaJkj3UDB3c0xc-uTCbaFL5jSFQ", True),
+        ("yolov8x_ncnn_half_ncnn_model", "1SmL1w9AKg1wqlAoozXWZY8VOXKUYU7fU", True),
+        ("yolov8x_ncnn_int8_ncnn_model", "11wpqqNqBFLrB_LAtHe-4q7D85o7OYsQn", True),
+    ],
+    "tflite": [],
+    "onnx": [],
     "tensorRT": ["CUDAyolov8n.pt"]
 }
 

@@ -5,7 +5,7 @@ import base64
 import socket
 import gdown
 from termcolor import colored
-
+from tqdm import tqdm
 
 
 ip = "localhost"
@@ -88,8 +88,8 @@ def ask(conn, type: str):
 
 
 if __name__ == "__main__":
-    system_name = input("Назовитесь>")
-    print("Try to found test.py")
+    system_name = input("System Name>")
+    print("Try to find test.py")
     try:
         from test import bench_model, parse_model_name
         print("File load")
@@ -138,17 +138,19 @@ if __name__ == "__main__":
             gdown.download(id=video[1], output=path.join(videos_path, video[0]))
             print(colored(f"Downloaded {video}", "green"))
 
-    print("All models and videos downloaded.")
-
+    print(colored("All models and videos downloaded.", "green"))
+    print(colored(f"Going to test: {len(to_test_models)} models"))
+    
     for video in videos:
-        for model_name in to_test_models:
+        for model_number, model_name in enumerate(to_test_models):
             model = YOLO(path.join(models_path, model_name))
-            if not model_name.endswith(".pt"):
+            if not model_name.endswith(".pt"): # Base models don't have args
                 args = parse_model_name(model_name)
             else: args = ()
             res = bench_model(model, path.join(videos_path, video[0]), args)
-            print(res)
+            print(colored(f"Model test results: \n{res}", "green"))
             send_json(sock, {"type": "send_stats", "save_name": f"{system_name}.csv", "results": {model.ckpt_path: res}})
+            print(f"Tested: {colored(str(model_number + 1), 'red')}/{colored(str(len(to_test_models)), 'green')}")
         
 
     # TODO: make bench
