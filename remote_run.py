@@ -3,6 +3,8 @@ from struct import pack, unpack
 from json import loads, dumps
 import base64
 import socket
+import gdown
+from termcolor import colored
 
 
 
@@ -115,23 +117,26 @@ if __name__ == "__main__":
         model_use = input(f"Do you want to test {model_type} models? (y - yes, other - not): ")
         if model_use.lower() == "y":
             for model_name in models[model_type]:
-                to_test_models.append(model_name)
-                if not path.isfile(path.join(models_path, model_name)):
+                to_test_models.append(model_name[0])
+                if not path.isfile(path.join(models_path, model_name[0])):
                     want_models.append(model_name)
 
-    if len(want_models) != 0: print(f"We need to download models: {', '.join(want_models)}")
+    if len(want_models) != 0: print(f"We need to download models: {', '.join([i[0] for i in want_models])}")
     for model_name in want_models:
-        ask_file(sock, models_path, model_name, "model")
-        print(f"We downloaded {model_name}")
-    
+        print(model_name)
+        if not model_name[2]: # File
+            gdown.download(id=model_name[1], output=path.join(models_path, model_name[0]))
+        else: # Folder
+            gdown.download_folder(id=model_name[1], output=path.join(models_path, model_name[0]))
+        print(colored(f"We downloaded {model_name}", "green"))
     
 
     videos = ask(sock, "get_videos")
-    if len(videos) != 0: print(f"We need to download videos: {', '.join(videos)} ({len(videos)})")
+    if len(videos) != 0: print(f"We need to download videos: {', '.join([i[0] for i in videos])} ({len(videos)})")
     for video in videos:
-        if not path.isfile(path.join(videos_path, video)):
-            ask_file(sock, videos_path, video, "video")
-            print(f"Downloaded {video}")
+        if not path.isfile(path.join(videos_path, video[0])):
+            gdown.download(id=video[1], output=path.join(videos_path, video[0]))
+            print(colored(f"Downloaded {video}", "green"))
 
     print("All models and videos downloaded.")
 
@@ -141,7 +146,7 @@ if __name__ == "__main__":
             if not model_name.endswith(".pt"):
                 args = parse_model_name(model_name)
             else: args = ()
-            res = bench_model(model, path.join(videos_path, video), args)
+            res = bench_model(model, path.join(videos_path, video[0]), args)
             print(res)
             send_json(sock, {"type": "send_stats", "save_name": f"{system_name}.csv", "results": {model.ckpt_path: res}})
         

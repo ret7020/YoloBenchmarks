@@ -6,7 +6,7 @@ from socket_utils import *
 from os import path, makedirs
 import csv
 
-ip = "localhost"
+ip = "0.0.0.0"
 port = 8001
 
 makedirs(python_files_path, exist_ok=True)

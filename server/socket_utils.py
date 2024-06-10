@@ -18,6 +18,8 @@ def send_file(sock, file_name):
 
     print("Начинаем чтение файла")
     # Читаем файл и записываем данные into json
+    if path.isdir(file_name):
+        pass
     with open(file_name, "rb") as file:
         file_content = file.read()
     print("Начинаем кодирование файла")
