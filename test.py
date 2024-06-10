@@ -15,39 +15,52 @@ import time
 import cv2
 import gc
 import torch
+import cv2
 
 
 
-def bench_model(model, args, images, repeat_coeff=5):
+TEST_SOURCE_ARGS, CAPTURE = None, None
+
+def bench_model(model, video, args):
     inference_times = []
     is_half = True if "half" in args else False
     is_int8 = True if "int8" in args else False
     optimize = False if "ncnn" in args else True  # NCNN models can't work with optimize flag
     runtime = args[1] if len(args) > 1 else "BASE"
 
+    capture = cv2.VideoCapture(video)
+
     # Warmup model before benched inference (anyway on test images set, not camera)
     warmup_times = []
-    for _ in range(WARMUP_IMAGES):
-        res = model.predict(images[0], task=TASK, verbose=False, half=is_half, int8=is_int8, optimize=optimize)
+    print(colored(f"Testing model: {model.ckpt_path} with video: {video}", "green"))
+    for _ in range(10):
+        _, frame = capture.read()
+        res = model.predict(frame, task=TASK, verbose=False, half=is_half, int8=is_int8, optimize=optimize, save=False, visualize=False)
         warmup_times.append(res[0].speed["inference"])
+    print(colored(f"Warmup finished", "green"))
 
-    if TEST_SOURCE_ARGS[0] == "images":
-        for _ in range(repeat_coeff):  # test each image repeat_coeff times on same model
-            for image in images:
-                res = model.predict(image, task=TASK, verbose=False, half=is_half, int8=is_int8, optimize=optimize)
-                inference_times.append(res[0].speed["inference"])
-                time.sleep(DELAY_BETWEEN_TESTS)
-    elif TEST_SOURCE_ARGS[1] == "camera":
-        for _ in range(int(TEST_SOURCE_ARGS[2])):
-            _, image = CAPTURE.read()
-            res = model.predict(image, task=TASK, verbose=False, half=is_half, int8=is_int8, optimize=optimize)
+    frames_cnt = 0
+    progress_bar = iter(tqdm(range(200)))
+    while capture.isOpened():
+        ret, frame = capture.read()
+        if ret and frames_cnt < 200:
+            frame = cv2.resize(frame, (640, 640))
+            res = model.predict(frame, task=TASK, verbose=False, half=is_half, int8=is_int8, optimize=optimize, save=False, visualize=False)
             inference_times.append(res[0].speed["inference"])
-            time.sleep(DELAY_BETWEEN_TESTS)
+            frames_cnt += 1
+            next(progress_bar)
+        else:
+            capture.release()
+    print(colored(f"Benchmark finished", "yellow"))
+
 
     metrics = model.val(data=VALIDATE_CONFIG, verbose=False)
+    print(colored(f"Model validated on {VALIDATE_CONFIG}", "yellow"))
     return {
         "inference_time": sum(inference_times) / (len(inference_times)),  # ms
         "inference_time_1": round(sum(inference_times) / (len(inference_times)), 1),  # ms 1 digit
+        "inference_time_min": min(inference_times),
+        "inference_time_max": max(inference_times),
         "fps": round(1000 / (sum(inference_times) / (len(inference_times))), 1),  # fps 1 digit
         "half": int(is_half),
         "int8": int(is_int8),
@@ -60,7 +73,7 @@ def bench_model(model, args, images, repeat_coeff=5):
     }
 
 
-def benchmark(models, images, repeat_coeff=5):
+def benchmark(models, images, repeat_coeff=5, save_callback=lambda x: None):
     print(
         f"Testing models: {len(models)}\nUniq images: {colored(len(images), 'green')}\nInferences count: {colored(str(len(models) * repeat_coeff * len(images)), 'yellow')}")
     results = {}
@@ -68,6 +81,7 @@ def benchmark(models, images, repeat_coeff=5):
         args = model[1:] if len(model) > 1 else []
         model = YOLO(model[0])
         results[model.ckpt_path] = bench_model(model, args, images, repeat_coeff=2)
+        save_callback(results[model.ckpt_path])
 
         # Clean system after inference
         del model
@@ -101,10 +115,7 @@ def csv_benchmark(path, results):
         for model in results:
             res = results[model]
             # TOOD JOIN
-            writer.writerow({'model': model, 'inference_time': res['inference_time_1'],
-                             'fps': res['fps'], 'accurate_time': res['inference_time'],
-                             'half': res["half"], 'int8': res["int8"], 'runtime': res["runtime"], 'mAP50': res['map50'],
-                             'mAP75': res['map75'], 'device': res['device']})
+            writer.writerow({'model': model.replace("./exported_models/", "")} | res)
 
 
 def parse_model_name(name, path):
@@ -132,6 +143,7 @@ def print_machine_info():
 
 
 def run_video_test(TEST_SOURCE_):
+    global TEST_SOURCE_ARGS, CAPTURE
     print_machine_info()
     if not os.path.exists("./results"):
         os.mkdir("./results")

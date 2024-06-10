@@ -4,6 +4,8 @@ from json import loads, dumps
 import base64
 import socket
 
+
+
 ip = "localhost"
 port = 8001
 main_dir = "data"
@@ -84,9 +86,10 @@ def ask(conn, type: str):
 
 
 if __name__ == "__main__":
+    system_name = input("Назовитесь>")
     print("Try to found test.py")
     try:
-        # from test import run_video_test
+        from test import bench_model, parse_model_name
         print("File load")
 
         sock = socket.socket()
@@ -98,17 +101,21 @@ if __name__ == "__main__":
         ask_file(sock, "", "test.py")
         print("File downloaded")
 
-        from test import run_video_test
+        from test import bench_model, parse_model_name
 
         print("File imported")
+
+    from ultralytics import YOLO
 
     models = ask(sock, "get_models")
     print("Got models")
     want_models = []
+    to_test_models = []
     for model_type in models.keys():
         model_use = input(f"Do you want to test {model_type} models? (y - yes, other - not): ")
         if model_use.lower() == "y":
             for model_name in models[model_type]:
+                to_test_models.append(model_name)
                 if not path.isfile(path.join(models_path, model_name)):
                     want_models.append(model_name)
 
@@ -116,6 +123,8 @@ if __name__ == "__main__":
     for model_name in want_models:
         ask_file(sock, models_path, model_name, "model")
         print(f"We downloaded {model_name}")
+    
+    
 
     videos = ask(sock, "get_videos")
     if len(videos) != 0: print(f"We need to download videos: {', '.join(videos)} ({len(videos)})")
@@ -126,9 +135,20 @@ if __name__ == "__main__":
 
     print("All models and videos downloaded.")
 
+    for video in videos:
+        for model_name in to_test_models:
+            model = YOLO(path.join(models_path, model_name))
+            if not model_name.endswith(".pt"):
+                args = parse_model_name(model_name)
+            else: args = ()
+            res = bench_model(model, path.join(videos_path, video), args)
+            print(res)
+            send_json(sock, {"type": "send_stats", "save_name": f"{system_name}.csv", "results": {model.ckpt_path: res}})
+        
+
     # TODO: make bench
 
     # results = {"jisdhfishdf": 2342}
-    # send_json(sock, {"type": "send_stats", "save_name": "pedredson_nano.csv", "results": results})
+    # 
 
     sock.close()

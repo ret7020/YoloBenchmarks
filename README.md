@@ -17,4 +17,5 @@ On Intel CPU system we have fastest inference with yolov8n model exported to Ope
 - [ ] Lite requirements (Yolo can install runtimes on fly)
 - [ ] Selectable inference device
 - [x] Write 1/0 instead True/False to csv report in int8/half sections
-- [ ] Remove ./exported_models/ from csv name
+- [x] Remove ./exported_models/ from csv name
+- [x] Disable yolo visualize
