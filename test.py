@@ -11,11 +11,9 @@ import csv
 from datetime import datetime
 import psutil
 import platform
-import time
 import cv2
 import gc
 import torch
-import cv2
 
 
 

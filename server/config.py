@@ -65,7 +65,22 @@ models = {
         ("yolov8x_tflite_int8.tflite", "1pbX9LutPxddef_0Km2CcF3xC4Ocqz6K6", False),
         
     ],
-    "onnx": [],
+    "onnx": [
+        ("yolov8n_onnx_base.onnx", "1Y7p4RKdM-4xGDAdJv5NPt_kTGLkw2OHL", False),
+        ("yolov8n_onnx_int8.onnx", "1rbK_0DiPOQmsuZEvVKnZjyoWDuO-Z-a2", False),
+
+        ("yolov8s_onnx_base.onnx", "1jTzxgkN5MCZcl3L3Zq0msje96SN_aXHw", False),
+        ("yolov8s_onnx_int8.onnx", "10OSI8aVdJUOy8MIxO32OkK-QrQiO2wg5", False),
+
+        ("yolov8m_onnx_base.onnx", "1ezuNmYL3p0bsLAWEP1vkzrTnKyzYFzJ8", False),
+        ("yolov8m_onnx_int8.onnx", "1JIPP4B2WALWbtXl1uUw1Ty_WKQQBorfD", False),
+
+        ("yolov8l_onnx_base.onnx", "1UWFxqFXwed9jRXar0euBU5Dny5CBzSPH", False),
+        ("yolov8l_onnx_int8.onnx", "11fzsa81ARAQDRhK1_48QT1dIgEqljCl2", False),
+
+        ("yolov8x_onnx_base.onnx", "1BxP3AEJwqKcz3wumM57l4P9_LPuHkv6q", False),
+        ("yolov8x_onnx_int8.onnx", "1JcPVib-nsBp6dpARP4_5vS9avR-Hs_lT", False),
+    ],
     "tensorRT": ["CUDAyolov8n.pt"]
 }
 
