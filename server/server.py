@@ -32,7 +32,7 @@ def process_client(conn, addr):
     while True:
         recv = receive_json(conn)
         if recv["type"] == "ask_files":
-            print(addr, f"asked file {recv["filename"]} from group {recv["ftype"]}")
+            print(addr, f"asked file {recv['filename']} from group {recv['ftype']}")
             file_name = recv["filename"]
             if recv["ftype"] == "py":
                 send_file(conn, path.join(python_files_path, file_name))
