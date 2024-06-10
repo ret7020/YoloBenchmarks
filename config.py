@@ -9,15 +9,15 @@ BASE_MODELS = [
 EXPORTED_MODELS_PATH = "./exported_models"
 
 TEST_IMAGES = ["./assets/images/bus.jpg", "./assets/images/cars.png"]
-TEST_SOURCE = "images:" # if camera:source:cnt it will use camera (example, camera:0:10 -> cv2.VideoCapture(0); read 20 frames from camera)
-DEVICES = ["cpu"]
+TEST_SOURCE = "video:video " # if camera:source:cnt it will use camera (example, camera:0:10 -> cv2.VideoCapture(0); read 20 frames from camera)
+DEVICES = ["cuda"]
 CSV_HEADER = ['model', 'runtime', 'inference_time', 'fps', 'accurate_time', 'device', 'half', 'int8', 'mAP50', 'mAP75']
 VALIDATE_CONFIG = "coco8.yaml"
 WARMUP_IMAGES = 5
 
 # What to test
-TEST_BASE = 0
-TEST_EXPORTED = 1
+TEST_BASE = 1
+TEST_EXPORTED = 0
 DELAY_BETWEEN_TESTS = 0.1
 
 # Only for exported models
