@@ -6,7 +6,7 @@ models = {
         ("yolov8l.pt", "1f1SlM01l3EWvpH66fEqyrdsEe1F5PdFT", False),
         ("yolov8x.pt", "1stXAXeDSgaMFv8AkZwtiw5RXvInd74tQ", False),
     ],
-    "openvino": [
+    "openvino_intel": [
         ("yolov8n_openvino_base_openvino_model", "1A0O8iK23T9x0yX5sEy-Hvd0j_ZAttCKb", True),
         ("yolov8n_openvino_half_openvino_model", "1B2FSJv5RV-fc0YsX10n6dBaJvC-eOCEq", True),
         ("yolov8n_openvino_int8_openvino_model", "18PyBs5ktB46nJCnv6PcEaHFZ_p4DRM9U", True),
@@ -81,7 +81,7 @@ models = {
         ("yolov8x_onnx_base.onnx", "1BxP3AEJwqKcz3wumM57l4P9_LPuHkv6q", False),
         ("yolov8x_onnx_int8.onnx", "1JcPVib-nsBp6dpARP4_5vS9avR-Hs_lT", False),
     ],
-    "tensorRT": ["CUDAyolov8n.pt"]
+    "tensorRT_cuda": ["CUDAyolov8n.pt"]
 }
 
 videos = [("adekvat.mp4", "1fr2j7hWL9HBTnLSJSpXD_LoZWeJg567v")]
