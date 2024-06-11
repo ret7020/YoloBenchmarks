@@ -118,7 +118,7 @@ if __name__ == "__main__":
         if model_use.lower() == "y":
             for model_name in models[model_type]:
                 to_test_models.append(model_name[0])
-                if not path.isfile(path.join(models_path, model_name[0])):
+                if not path.isfile(path.join(models_path, model_name[0])) and not path.isdir(path.join(models_path, model_name[0])) :
                     want_models.append(model_name)
 
     if len(want_models) != 0: print(f"We need to download models: {', '.join([i[0] for i in want_models])}")
@@ -145,7 +145,7 @@ if __name__ == "__main__":
         for model_number, model_name in enumerate(to_test_models):
             model = YOLO(path.join(models_path, model_name))
             if not model_name.endswith(".pt"): # Base models don't have args
-                args = parse_model_name(model_name)
+                args = parse_model_name(model_name, models_path)
             else: args = ()
             res = bench_model(model, path.join(videos_path, video[0]), args)
             print(colored(f"Model test results: \n{res}", "green"))

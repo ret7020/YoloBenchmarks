@@ -65,7 +65,7 @@ models = {
         ("yolov8x_tflite_int8.tflite", "1pbX9LutPxddef_0Km2CcF3xC4Ocqz6K6", False),
         
     ],
-    "onnx": [
+    "onnx": [ # Only int8 and base
         ("yolov8n_onnx_base.onnx", "1Y7p4RKdM-4xGDAdJv5NPt_kTGLkw2OHL", False),
         ("yolov8n_onnx_int8.onnx", "1rbK_0DiPOQmsuZEvVKnZjyoWDuO-Z-a2", False),
 
