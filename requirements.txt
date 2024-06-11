@@ -1,5 +1,8 @@
 ultralytics
 termcolor
+gdown
+tqdm
+
 # Other requirements optional (will be download if needed by ultralytics)
 
 # tensorflow
