@@ -6,10 +6,12 @@ import socket
 import gdown
 from termcolor import colored
 from tqdm import tqdm
+import time
+import json
 
 
-ip = "localhost"
-port = 8001
+ip = input("Server ip>")
+port = int(input("Server port>"))
 main_dir = "data"
 models_path = path.join(main_dir, "models")
 videos_path = path.join(main_dir, "videos")
@@ -89,10 +91,10 @@ def ask(conn, type: str):
 
 if __name__ == "__main__":
     system_name = input("System Name>")
-    print("Try to find test.py")
+    print("Try to find test.py and connect to data-server")
     try:
-        from test import bench_model, parse_model_name
-        print("File load")
+        from test import bench_model, parse_model_name, print_machine_info
+        print(colored("File loaded", "green"))
 
         sock = socket.socket()
         sock.connect((ip, port))
@@ -103,18 +105,20 @@ if __name__ == "__main__":
         ask_file(sock, "", "test.py")
         print("File downloaded")
 
-        from test import bench_model, parse_model_name
+        from test import bench_model, parse_model_name, print_machine_info
 
         print("File imported")
+
+    print_machine_info()
 
     from ultralytics import YOLO
 
     models = ask(sock, "get_models")
-    print("Got models")
+    print("Got models list")
     want_models = []
     to_test_models = []
     for model_type in models.keys():
-        model_use = input(f"Do you want to test {model_type} models? (y - yes, other - not): ")
+        model_use = input(f"Do you want to test {colored(model_type, 'yellow')} models? (y - yes, other - not): ")
         if model_use.lower() == "y":
             for model_name in models[model_type]:
                 to_test_models.append(model_name[0])
@@ -149,7 +153,18 @@ if __name__ == "__main__":
             else: args = ()
             res = bench_model(model, path.join(videos_path, video[0]), args)
             print(colored(f"Model test results: \n{res}", "green"))
-            send_json(sock, {"type": "send_stats", "save_name": f"{system_name}.csv", "results": {model.ckpt_path: res}})
+            attempts = 0
+            with open("backup.txt", "a") as fd:
+                fd.write(json.dumps({model.ckpt_path: res}) + "\n")
+
+            while attempts < 5:
+                try:
+                    send_json(sock, {"type": "send_stats", "save_name": f"{system_name}.csv", "results": {model.ckpt_path: res}})
+                except:
+                    print(colored(f"Can't send data", "red"))
+                    attempts += 1
+                    time.sleep(1)
+
             print(f"Tested: {colored(str(model_number + 1), 'red')}/{colored(str(len(to_test_models)), 'green')}")
         
 

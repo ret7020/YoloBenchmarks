@@ -14,6 +14,7 @@ import platform
 import cv2
 import gc
 import torch
+import cpuinfo
 
 
 
@@ -135,6 +136,7 @@ def print_machine_info():
     info['cpu_cores'] = psutil.cpu_count(logical=False)
     info['cpu_all'] = psutil.cpu_count()
     info['ram'] = f"{psutil.virtual_memory().total / (1024.0 ** 3)} GB"
+    info['cpu_name'] = cpuinfo.get_cpu_info()['brand_raw']
     print("Current machine data: ")
     for i in info:
         print(f'{colored(i, "green").ljust(30)}: {str(info[i]).ljust(20)}')
