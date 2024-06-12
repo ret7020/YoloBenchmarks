@@ -41,6 +41,16 @@ def process_client(conn, addr):
             elif recv["ftype"] == "model":
                 send_file(conn, path.join(model_path, file_name))
         elif recv["type"] == "get_models":
+            if "name" in recv:
+                send_models = models
+                if path.isfile(path.join(analytics_path, recv["name"])):
+                    with open(path.join(analytics_path, recv["name"])) as fd:
+                        _ = fd.readline()
+                        data = [i.split() for i in fd.readlines()]
+                    for row in data:
+                        if row[1] == "BASE":
+                            del send_models["base"][row[0].replace(r"data\\models\\", "")]
+
             print(addr, "asked models")
             send_json(conn, models)
         elif recv["type"] == "get_videos":

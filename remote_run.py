@@ -160,6 +160,7 @@ if __name__ == "__main__":
             while attempts < 5:
                 try:
                     send_json(sock, {"type": "send_stats", "save_name": f"{system_name}.csv", "results": {model.ckpt_path: res}})
+                    break
                 except:
                     print(colored(f"Can't send data", "red"))
                     attempts += 1

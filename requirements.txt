@@ -2,7 +2,6 @@ ultralytics
 termcolor
 gdown
 tqdm
-cpuinfo
 
 # Other requirements optional (will be download if needed by ultralytics)
 
