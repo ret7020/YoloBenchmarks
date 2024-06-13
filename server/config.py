@@ -48,6 +48,12 @@ models = {
         ("yolov8x_ncnn_half_ncnn_model", "1SmL1w9AKg1wqlAoozXWZY8VOXKUYU7fU", True),
         ("yolov8x_ncnn_int8_ncnn_model", "11wpqqNqBFLrB_LAtHe-4q7D85o7OYsQn", True),
     ],
+    "nccn_lite": [
+        ("yolov8n_ncnn_base_ncnn_model", "1YyN8M2rzjitslnKuntwsHhati5AU8J-1", True),
+        ("yolov8n_ncnn_half_ncnn_model", "1lgft4bl9Vr3IL8NBKzlDNJAbGxob988E", True),
+        ("yolov8n_ncnn_int8_ncnn_model", "1d1mvQbEviFHgKapM-oYOdNCfB0jwnKmE", True),
+    ],
+
     "tflite": [ # Only int8 and base
         ("yolov8n_tflite_base.tflite", "12JklYm_syFXUD8RIuz7NamnOGHJuY2f4", False),
         ("yolov8n_tflite_int8.tflite", "13R6fMsrgSUWCmhPwnzjG_cONELm_ILHA", False),
@@ -64,6 +70,10 @@ models = {
         ("yolov8x_tflite_base.tflite", "19OjHwP8EbCLS28gDMg-R3oRHpha-9vBH", False),
         ("yolov8x_tflite_int8.tflite", "1pbX9LutPxddef_0Km2CcF3xC4Ocqz6K6", False),
         
+    ],
+    "tflite_lite": [
+        ("yolov8n_tflite_base.tflite", "12JklYm_syFXUD8RIuz7NamnOGHJuY2f4", False),
+        ("yolov8n_tflite_int8.tflite", "13R6fMsrgSUWCmhPwnzjG_cONELm_ILHA", False),
     ],
     "onnx": [ # Only int8 and base
         ("yolov8n_onnx_base.onnx", "1Y7p4RKdM-4xGDAdJv5NPt_kTGLkw2OHL", False),

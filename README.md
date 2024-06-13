@@ -19,3 +19,4 @@ On Intel CPU system we have fastest inference with yolov8n model exported to Ope
 - [x] Write 1/0 instead True/False to csv report in int8/half sections
 - [x] Remove ./exported_models/ from csv name
 - [x] Disable yolo visualize
+- [] Special Yolov8 model for ONNX runtime
