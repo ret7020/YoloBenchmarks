@@ -79,6 +79,9 @@ models = {
         ("yolov8n_onnx_base.onnx", "1Y7p4RKdM-4xGDAdJv5NPt_kTGLkw2OHL", False),
         ("yolov8n_onnx_int8.onnx", "1rbK_0DiPOQmsuZEvVKnZjyoWDuO-Z-a2", False),
 
+        ("yolov8n_onnxnosimp_base.onnx", "1dkf4oIR7Zjdr3_6Dnd0uJ5zAWPELJOZy", False),
+        ("yolov8n_onnxnosimp_int8.onnx", "1J1UMjIZSRGDK3n37G3YOlWx5zmXeMlIR", False),
+
         ("yolov8s_onnx_base.onnx", "1jTzxgkN5MCZcl3L3Zq0msje96SN_aXHw", False),
         ("yolov8s_onnx_int8.onnx", "10OSI8aVdJUOy8MIxO32OkK-QrQiO2wg5", False),
 
@@ -93,6 +96,31 @@ models = {
     ],
     "tensorRT_cuda": ["CUDAyolov8n.pt"]
 }
+
+# models = {
+#     "base": [("base.pt", "1qVFTuHIF0EEU2bZvvgZqwxpwHqOaT4fi", False)],
+#     "openvino": [
+#         ("base_cube_openvino_base_openvino_model", "1hgthB5eCYnPx3OvGB0GMNsR5-VHod6fZ", True),
+#         ("base_cube_openvino_half_openvino_model", "1ma1wpRLFpzC7jwGicuHXwT4YBHGJL-EA", True),
+#         ("base_cube_openvino_int8_openvino_model", "1uurmxBRyy7zs_RSVeRodYYGbX-Vd8Nvc", True)
+#     ],
+#     "ncnn": [
+#         ("base_cube_ncnn_base_ncnn_model", "1DaMfpz1cthGa2JKRmbeJU02cfxZPm8AU", True),
+#         ("base_cube_ncnn_half_ncnn_model", "1GxEDy_fwl3yYitBfz5ym4lv5QYiTz47z", True),
+#         ("base_cube_ncnn_int8_ncnn_model", "1qR1vSZDAJ1CRssqK0xKG0dsetglk3S_S", True)
+#     ],
+    
+#     "onnx": [
+#         ("base_cube_onnx_base.onnx", "1o_lZ3jdbgGWk46Lnj_ikZohF74-0C9XQ", False),
+#         ("base_cube_onnx_int8.onnx", "1mm2Hdq3eNqG5ObnwPC_LHPAi90Ax3z84", False)
+#     ],
+#     "tflite": [
+#         ("base_cube_tflite_base.tflite", "1pRJyMAAhZtaL-UN3ancEeJTx0Qx61_OF", False),
+#         ("base_cube_tflite_int8.tflite", "15LPotJZZYyJvd8b74sM4PfsM2d8uLRc8", False)
+#     ]
+# }
+
+
 
 videos = [("adekvat.mp4", "1fr2j7hWL9HBTnLSJSpXD_LoZWeJg567v")]
 

@@ -26,3 +26,4 @@ MODEL_FILTER = lambda x: "openvino" in x
 
 # TODO
 TASK = "detect" # segment; classify
+VALIDATE = 0

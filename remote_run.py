@@ -148,6 +148,7 @@ if __name__ == "__main__":
     for video in videos:
         for model_number, model_name in enumerate(to_test_models):
             model = YOLO(path.join(models_path, model_name))
+            print(model_name)
             if not model_name.endswith(".pt"): # Base models don't have args
                 args = parse_model_name(model_name, models_path)
             else: args = ()

@@ -53,7 +53,13 @@ def bench_model(model, video, args):
     print(colored(f"Benchmark finished", "yellow"))
 
 
-    metrics = model.val(data=VALIDATE_CONFIG, verbose=False)
+    if VALIDATE:
+        metrics = model.val(data=VALIDATE_CONFIG, verbose=False)
+        map50 = metrics.box.map50
+        map75 = metrics.box.map75
+    else:
+        map50 = None
+        map75 = None
     print(colored(f"Model validated on {VALIDATE_CONFIG}", "yellow"))
     return {
         "inference_time": sum(inference_times) / (len(inference_times)),  # ms
@@ -64,8 +70,8 @@ def bench_model(model, video, args):
         "half": int(is_half),
         "int8": int(is_int8),
         "runtime": runtime,
-        "map50": metrics.box.map50,
-        "map75": metrics.box.map75,
+        "map50": map50,
+        "map75": map75,
         "device": "cpu",  # TODO selectable device
         "warmup_min_inf_time": min(warmup_times),
         "warmup_max_inf_time": max(warmup_times)
@@ -123,7 +129,10 @@ def parse_model_name(name, path):
     if dot_index != -1: name = name[:dot_index]
     if "_ncnn_model" in name: name = name.replace("_ncnn_model", "")
     if "_openvino_model" in name: name = name.replace("_openvino_model", "")
-    base_model, runtime, dtype = name.split("_")
+    if len(name.split("_")) == 3:
+        base_model, runtime, dtype = name.split("_")
+    else:
+        base_model, _, runtime, dtype = name.split("_")
     return f"{path}/{name_full}", base_model, runtime, dtype
 
 
