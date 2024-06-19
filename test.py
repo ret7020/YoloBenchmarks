@@ -26,6 +26,7 @@ def bench_model(model, video, args):
     is_int8 = True if "int8" in args else False
     optimize = False if "ncnn" in args else True  # NCNN models can't work with optimize flag
     runtime = args[1] if len(args) > 1 else "BASE"
+    device = 'cuda' if "cuda" in args else 'cpu'
 
     capture = cv2.VideoCapture(video)
 
@@ -34,7 +35,7 @@ def bench_model(model, video, args):
     print(colored(f"Testing model: {model.ckpt_path} with video: {video}", "green"))
     for _ in range(10):
         _, frame = capture.read()
-        res = model.predict(frame, task=TASK, verbose=False, half=is_half, int8=is_int8, optimize=optimize, save=False, visualize=False)
+        res = model.predict(frame, task=TASK, verbose=False, half=is_half, int8=is_int8, optimize=optimize, save=False, visualize=False, device=device)
         warmup_times.append(res[0].speed["inference"])
     print(colored(f"Warmup finished", "green"))
 
@@ -44,7 +45,7 @@ def bench_model(model, video, args):
         ret, frame = capture.read()
         if ret and frames_cnt < 200:
             frame = cv2.resize(frame, (640, 640))
-            res = model.predict(frame, task=TASK, verbose=False, half=is_half, int8=is_int8, optimize=optimize, save=False, visualize=False)
+            res = model.predict(frame, task=TASK, verbose=False, half=is_half, int8=is_int8, optimize=optimize, save=False, visualize=False, device=device)
             inference_times.append(res[0].speed["inference"])
             frames_cnt += 1
             next(progress_bar)
@@ -72,13 +73,14 @@ def bench_model(model, video, args):
         "runtime": runtime,
         "map50": map50,
         "map75": map75,
-        "device": "cpu",  # TODO selectable device
+        "device": device,
         "warmup_min_inf_time": min(warmup_times),
         "warmup_max_inf_time": max(warmup_times)
     }
 
 
 def benchmark(models, images, repeat_coeff=5, save_callback=lambda x: None):
+    cuda = torch.cuda.is_available()
     print(
         f"Testing models: {len(models)}\nUniq images: {colored(len(images), 'green')}\nInferences count: {colored(str(len(models) * repeat_coeff * len(images)), 'yellow')}")
     results = {}
