@@ -22,7 +22,6 @@ def csv_benchmark(path, results):
         for model in results:
             res = results[model]
             print(res)
-            # TOOD JOIN
             writer.writerow({'model': model} | res)
 
 
@@ -41,24 +40,12 @@ def process_client(conn, addr):
             elif recv["ftype"] == "model":
                 send_file(conn, path.join(model_path, file_name))
         elif recv["type"] == "get_models":
-            # if "name" in recv:
-            #     send_models = models
-            #     if path.isfile(path.join(analytics_path, recv["name"])):
-            #         with open(path.join(analytics_path, recv["name"])) as fd:
-            #             _ = fd.readline()
-            #             data = [i.split() for i in fd.readlines()]
-            #         for row in data:
-            #             if row[1] == "BASE":
-            #                 ind = send_models["base"].index(row[0].replace(r"data\\models\\", ""))
-            #                 del send_models["base"][ind]
-            # print(send_models)
-            # print(addr, "asked models")
             send_json(conn, models)
         elif recv["type"] == "get_videos":
             print(addr, "asked videos")
             send_json(conn, videos)
         elif recv["type"] == "send_stats":
-            print("Flex, we recieved results from", addr)
+            print("Results from", addr)
             if not recv["save_name"] in headers_writen:
                 with open(path.join(analytics_path, recv["save_name"]), 'w', newline='') as csvfile:
                     writer = csv.DictWriter(csvfile, fieldnames=CSV_HEADER)

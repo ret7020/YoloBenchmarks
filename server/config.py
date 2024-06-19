@@ -75,6 +75,10 @@ models = {
         ("yolov8n_tflite_base.tflite", "12JklYm_syFXUD8RIuz7NamnOGHJuY2f4", False),
         ("yolov8n_tflite_int8.tflite", "13R6fMsrgSUWCmhPwnzjG_cONELm_ILHA", False),
     ],
+    "onnx_lite": [ # Only N model
+        ("yolov8n_onnx_base.onnx", "1Y7p4RKdM-4xGDAdJv5NPt_kTGLkw2OHL", False),
+        ("yolov8n_onnx_int8.onnx", "1rbK_0DiPOQmsuZEvVKnZjyoWDuO-Z-a2", False),
+    ],
     "onnx": [ # Only int8 and base
         ("yolov8n_onnx_base.onnx", "1Y7p4RKdM-4xGDAdJv5NPt_kTGLkw2OHL", False),
         ("yolov8n_onnx_int8.onnx", "1rbK_0DiPOQmsuZEvVKnZjyoWDuO-Z-a2", False),
@@ -94,7 +98,23 @@ models = {
         ("yolov8x_onnx_base.onnx", "1BxP3AEJwqKcz3wumM57l4P9_LPuHkv6q", False),
         ("yolov8x_onnx_int8.onnx", "1JcPVib-nsBp6dpARP4_5vS9avR-Hs_lT", False),
     ],
-    "tensorRT_cuda": ["CUDAyolov8n.pt"]
+    "int8": [
+        ("yolov8n_onnx_int8.onnx", "1rbK_0DiPOQmsuZEvVKnZjyoWDuO-Z-a2", False),
+        ("yolov8s_onnx_int8.onnx", "10OSI8aVdJUOy8MIxO32OkK-QrQiO2wg5", False),
+        ("yolov8m_onnx_int8.onnx", "1JIPP4B2WALWbtXl1uUw1Ty_WKQQBorfD", False),
+        ("yolov8l_onnx_int8.onnx", "11fzsa81ARAQDRhK1_48QT1dIgEqljCl2", False),
+        ("yolov8x_onnx_int8.onnx", "1JcPVib-nsBp6dpARP4_5vS9avR-Hs_lT", False),
+        ("yolov8n_ncnn_int8_ncnn_model", "1d1mvQbEviFHgKapM-oYOdNCfB0jwnKmE", True),
+        ("yolov8s_ncnn_int8_ncnn_model", "1TSErD_XiTCnyskfCjv5GQ4i48h_dEE0S", True),
+        ("yolov8m_ncnn_int8_ncnn_model", "1kmNKd1G-PEHR-bZ02LBLkTViMVmKoFRJ", True),
+        ("yolov8l_ncnn_int8_ncnn_model", "13cYGHWes9aVjbsLJuTSgT5m7B-Hzx-j5", True),
+        ("yolov8x_ncnn_int8_ncnn_model", "11wpqqNqBFLrB_LAtHe-4q7D85o7OYsQn", True),
+        ("yolov8n_tflite_int8.tflite", "13R6fMsrgSUWCmhPwnzjG_cONELm_ILHA", False),
+        ("yolov8s_tflite_int8.tflite", "1Sg0N3aS2ScF-IFjmnwqHN2G07bCuzW9F", False),
+        ("yolov8m_tflite_int8.tflite", "1X3XvhsF1E1eJMSMxQcbCtGKE1EBYxDWh", False),
+        ("yolov8l_tflite_int8.tflite", "1brBlAZeYaAzkKFN2RdCc3B19y1vRmwPk", False),
+        ("yolov8x_tflite_int8.tflite", "1pbX9LutPxddef_0Km2CcF3xC4Ocqz6K6", False),
+    ]
 }
 
 # models = {
@@ -122,9 +142,11 @@ models = {
 
 
 
-videos = [("adekvat.mp4", "1fr2j7hWL9HBTnLSJSpXD_LoZWeJg567v")]
+videos = [
+    ("adekvat.mp4", "1fr2j7hWL9HBTnLSJSpXD_LoZWeJg567v")
+    # ("cubes.mp4", "1t1zOk8CPQGFdpRl7l3gJthydGOqDbRVI")
+]
 
-abs_path = ""
 video_path = "files/videos"
 model_path = "files/models"
 python_files_path = "files/py"
