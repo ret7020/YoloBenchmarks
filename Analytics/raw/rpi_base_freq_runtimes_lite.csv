@@ -1,0 +1,4 @@
+model,runtime,inference_time_1,fps,inference_time,device,half,int8,map50,map75,warmup_max_inf_time,warmup_min_inf_time,inference_time_max,inference_time_min
+data/models/yolov8n_ncnn_base_ncnn_model,yolov8n,436.9,2.3,436.92119240760803,cpu,0,0,,,575.1607418060303,434.19861793518066,504.22143936157227,429.42237854003906
+data/models/yolov8n_ncnn_half_ncnn_model,yolov8n,432.7,2.3,432.65825629234314,cpu,1,0,,,487.17212677001953,431.901216506958,507.2309970855713,426.0413646697998
+data/models/yolov8n_ncnn_int8_ncnn_model,yolov8n,438.2,2.3,438.1749355792999,cpu,0,1,,,484.421968460083,430.38344383239746,523.4594345092773,426.3145923614502

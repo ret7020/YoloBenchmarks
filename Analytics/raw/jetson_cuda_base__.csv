@@ -1,0 +1,2 @@
+model,runtime,inference_time_1,fps,inference_time,device,half,int8,map50,map75,warmup_max_inf_time,warmup_min_inf_time,inference_time_max,inference_time_min
+data/models/yolov8n.pt,BASE,96.9,10.3,96.86400175094604,cpu,0,0,,,2288.081169128418,60.12415885925293,166.7013168334961,92.10014343261719

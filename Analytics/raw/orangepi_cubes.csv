@@ -1,0 +1,4 @@
+model,runtime,inference_time_1,fps,inference_time,device,half,int8,map50,map75,warmup_max_inf_time,warmup_min_inf_time,inference_time_max,inference_time_min
+data/models/base.pt,BASE,3679.9,0.3,3679.892398118973,cpu,0,0,,,3129.418134689331,2247.1964359283447,3761.0936164855957,3659.651756286621
+data/models/base_cube_onnx_base.onnx,base,721.7,1.4,721.7048954963684,cpu,0,0,,,822.7405548095703,720.1471328735352,749.0062713623047,719.0759181976318
+data/models/base_cube_onnx_int8.onnx,base,719.6,1.4,719.6088397502899,cpu,0,1,,,923.3336448669434,718.1973457336426,766.5135860443115,716.8798446655273

@@ -1,0 +1,2 @@
+model,runtime,inference_time_1,fps,inference_time,device,half,int8,map50,map75,warmup_max_inf_time,warmup_min_inf_time,inference_time_max,inference_time_min
+data/models/base.pt,BASE,87.2,11.5,87.22769379615784,cpu,0,0,,,109.74860191345215,50.8120059967041,100.70037841796875,80.21879196166992
