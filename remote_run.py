@@ -10,6 +10,7 @@ from termcolor import colored
 from tqdm import tqdm
 import time
 import json
+import gc
 
 
 ip = input("Server ip>")
@@ -174,6 +175,10 @@ if __name__ == "__main__":
                         print(colored(f"Can't send data", "red"))
                         attempts += 1
                         time.sleep(1)
+                # Clean system after inference
+                del model
+                torch.cuda.empty_cache()
+                gc.collect()
 
             model = YOLO(path.join(models_path, model_name))
             print(model_name, "non cuda")
@@ -198,11 +203,9 @@ if __name__ == "__main__":
                     time.sleep(1)
 
                 print(f"Tested: {colored(str(model_number + 1), 'red')}/{colored(str(len(to_test_models)), 'green')}")
-
-
-    # TODO: make bench
-
-    # results = {"jisdhfishdf": 2342}
-    # 
+            # Clean system after inference
+            del model
+            torch.cuda.empty_cache()
+            gc.collect()
 
     sock.close()
