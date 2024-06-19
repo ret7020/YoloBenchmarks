@@ -157,7 +157,9 @@ if __name__ == "__main__":
                 if not model_name.endswith(".pt"): # Base models don't have args
                     args = parse_model_name(model_name, models_path)
                 else: args = ()
+                args = list(args)
                 args.append("cuda")
+                args = tuple(args)
                 res = bench_model(model, path.join(videos_path, video[0]), args)
                 print(colored(f"Model test results: \n{res}", "green"))
                 attempts = 0
