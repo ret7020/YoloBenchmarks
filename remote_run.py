@@ -1,4 +1,6 @@
 from os import path, makedirs
+
+import torch.cuda
 from struct import pack, unpack
 from json import loads, dumps
 import base64
@@ -147,11 +149,36 @@ if __name__ == "__main__":
     
     for video in videos:
         for model_number, model_name in enumerate(to_test_models):
+            if torch.cuda.is_available() and model_name[-3:] == ".pt":
+                model = YOLO(path.join(models_path, model_name))
+                model.to("cuda")
+                torch.cuda.set_device(0)
+                print(model_name, "cuda")
+                if not model_name.endswith(".pt"): # Base models don't have args
+                    args = parse_model_name(model_name, models_path)
+                else: args = ()
+                args.append("cuda")
+                res = bench_model(model, path.join(videos_path, video[0]), args)
+                print(colored(f"Model test results: \n{res}", "green"))
+                attempts = 0
+                with open("backup.txt", "a") as fd:
+                    fd.write(json.dumps({model.ckpt_path: res}) + "\n")
+
+                while attempts < 5:
+                    try:
+                        send_json(sock, {"type": "send_stats", "save_name": f"{system_name}.csv", "results": {model.ckpt_path: res}})
+                        break
+                    except:
+                        print(colored(f"Can't send data", "red"))
+                        attempts += 1
+                        time.sleep(1)
+
             model = YOLO(path.join(models_path, model_name))
-            print(model_name)
-            if not model_name.endswith(".pt"): # Base models don't have args
+            print(model_name, "non cuda")
+            if not model_name.endswith(".pt"):  # Base models don't have args
                 args = parse_model_name(model_name, models_path)
-            else: args = ()
+            else:
+                args = ()
             res = bench_model(model, path.join(videos_path, video[0]), args)
             print(colored(f"Model test results: \n{res}", "green"))
             attempts = 0
@@ -160,15 +187,16 @@ if __name__ == "__main__":
 
             while attempts < 5:
                 try:
-                    send_json(sock, {"type": "send_stats", "save_name": f"{system_name}.csv", "results": {model.ckpt_path: res}})
+                    send_json(sock, {"type": "send_stats", "save_name": f"{system_name}.csv",
+                                     "results": {model.ckpt_path: res}})
                     break
                 except:
                     print(colored(f"Can't send data", "red"))
                     attempts += 1
                     time.sleep(1)
 
-            print(f"Tested: {colored(str(model_number + 1), 'red')}/{colored(str(len(to_test_models)), 'green')}")
-        
+                print(f"Tested: {colored(str(model_number + 1), 'red')}/{colored(str(len(to_test_models)), 'green')}")
+
 
     # TODO: make bench
 
